@@ -4,7 +4,5 @@ public/config_test.php
 .project
 *.bfproject
 .buildpath
-node-modules
-node-modules/*
 vendor
 vendir/*
