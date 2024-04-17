@@ -1,0 +1,9 @@
+{
+    "SITEURL":"http://localhost/merlin",
+    "SITENAME":"Merlin framework",
+    "ADATKEZELO":"Adatkezelő neve<br>Címe<br>web site",
+    "ADATFELDOLGOZO":"Adatfeldolgozó neve<br>Címe<br>web site",
+    "SIGNO":"Aláírás és dátum",
+    "COOKIE_EXPIRE_DAYS": 10
+
+}

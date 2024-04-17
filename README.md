@@ -2,6 +2,20 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Tecnologies
+
+- javascript
+- react
+- typescript
+- php
+- mysql
+- axios
+- jest
+- npm
+- jquery
+- bootstrap
+- fontAwesome
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -44,3 +58,27 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Install into developer test server
+
+- cd webserver documentroot' parent
+- clone repo
+- cd repo_root
+- npm install
+- composer install
+- create mysql database and mysql user
+- run database init sql
+- create config.php from config.example.php
+- create config.tsx from config.example.tsx
+  
+## install ino public web server
+
+- create mysql database and mysql user
+- create config.php from config.example.php
+- create config.tsx from config.example.tsx
+- copy build folder into web server documentroot
+- copy public folder into web server documentroot
+- copy vendor folder into web server documentroot
+- copy config.php and config.tsx into web server documentroot
+- set web server document root subdirs is readonly except "images", "work" and "uploads" folder
+  

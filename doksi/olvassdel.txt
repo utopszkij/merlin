@@ -1,0 +1,73 @@
+https://medium.com/@prabhashi.mm/create-a-simple-react-app-typescript-with-login-register-pages-using-create-react-app-e5c12dd6db53
+
+cd /var/www/html
+
+npx create-react-app frontend --template typescript
+
+cd frontend
+
+npm start
+
+     browserben: localhost:3000 -et indit, ebben egy ract logo látható
+     ctrl/c -vel tér vissza a parancssorba
+     
+Nincs szükségünk az alkalmazásmappánkban létrehozott fájlok egy részére. 
+Távolítsa el ezeket a fájlokat (App.css, App.test.tsx, index.css, logo.svg).
+
+Remove the index.css import from index.tsx file. 
+Update the App.tsx file as below.
+
+import React from 'react';
+
+function App() {
+	return (
+		<>
+		</>
+	);
+}
+export default App;
+ 
+
+npm i react-router-dom
+
+npm audit fix --force
+
+hozzuk létre a 
+src/pages/Home.tsx
+src/pages/Login.tsx
+src/pages/Register.tsx
+
+fájlokat ehez hasonlóan:
+
+
+import React from 'react'
+const Register = () => {
+	return (
+		<div>Register</div>
+	)
+}
+export default React
+
+update index.tsx
+
+update App.tsx
+
+update packages.json
+
+npm i @mui/material @emotion/react @emotion/styled @mui/icons-material
+
+
+FIGYELEM
+
+Az npm run build -al létrehozott "dist" könyvtár csak a szerver 
+document-root -ban fut, alkönyvtárban nem!
+
+
+unit test turorial:
+
+https://www.newline.co/@bespoyasov/how-to-write-your-first-unit-test-in-react-typescript-app--ca51d0c0
+
+
+Merlin kép:
+
+https://www.cleanpng.com
