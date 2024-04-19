@@ -2,7 +2,6 @@
 declare(strict_types=1);
 DEFINE('SITETITLE','Merlin');
 DEFINE('SITEURL','https://valami.hu');
-DEFINE('DBTYPE','mysql');
 
 // MYSQL
 DEFINE('HOST','localhost');

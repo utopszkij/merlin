@@ -16,6 +16,7 @@ $result->mailsended=false;
 if (($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR']) |
     ($_SESSION['HTTP_USER_AGENT'] != $_SERVER['HTTP_USER_AGENT'])) {
 	// session id is invalid!
+	$result->errorMsg = 'SESSION_INVALID';
 	echo JSON_encode($result);
 	exit();
 }

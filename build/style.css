@@ -1,6 +1,12 @@
       body {padding:20px;}
       .btn {margin:5px}
       .link {color:blue; cursor:pointer}
+
+      .form label {display:inline-block; width:250px; text-align:right; margin-right:5px;}
+      .form input {display:inline-block; width:auto; min-width:20px;}
+      .form select {display:inline-block; width:auto}
+
+
       #scrolltotop {position:fixed; z-index:99; right:10px; bottom:10px; opacity:0.5; background-color:#CFF4FC}
 
       #waiting {position:fixed; z-index:99; text-align:center; background-color:transparent; 
@@ -67,13 +73,14 @@
       }
             
       #Home .message {background-color:white; opacity:1.0}
-      #Home .message textarea {height:100px; width:400px;}
+      #Home .message textarea {height:100px;}
       
       #policy ul {margin-left:3%}
       
       #login .btn {width:250px}
       #login label {display:inline-block; text-align:left; width:350px}
 
+      
       #Footer {background-color: black; clor:white; padding:5%}
       #Footer a {color:yellow; text-decoration:none; margin-right:20px}
       #Footer div {color:white}

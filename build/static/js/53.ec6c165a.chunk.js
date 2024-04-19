@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[53],{53:(e,o,s)=>{s.r(o),s.d(o,{default:()=>a});var t=s(43),i=s(85),d=s(613),h=s.n(d),n=s(579);const a=()=>{const e=i.sh.getCookie("sid");return(0,t.useEffect)((()=>{h()("#waiting").hide(),i.sh.setCookie("logedId","",10),i.sh.setCookie("logedNick","",10),i.sh.setCookie("logedAvatar","",10),i.sh.setCookie("logedGroups","",10),i.sh.callApi("api/dologout.php",{sid:e},(e=>{i.sh.gotoNewPage("./home")}))})),(0,n.jsx)(n.Fragment,{})}}}]);
+//# sourceMappingURL=53.ec6c165a.chunk.js.map

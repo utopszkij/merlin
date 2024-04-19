@@ -16,6 +16,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - bootstrap
 - fontAwesome
 
+[live demo](http://utopszkij.hu)
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -53,6 +55,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
@@ -61,24 +64,23 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Install into developer test server
 
-- cd webserver documentroot' parent
+- cd developer web server parent of docroot (example: /var/www/html)
 - clone repo
-- cd repo_root
+- cd merlin
 - npm install
 - composer install
 - create mysql database and mysql user
 - run database init sql
 - create config.php from config.example.php
-- create config.tsx from config.example.tsx
   
-## install ino public web server
+## install ino remote public web server
 
-- create mysql database and mysql user
-- create config.php from config.example.php
-- create config.tsx from config.example.tsx
-- copy build folder into web server documentroot
-- copy public folder into web server documentroot
-- copy vendor folder into web server documentroot
-- copy config.php and config.tsx into web server documentroot
+- cd developer' repo root
+- npm build
+- create mysql database and mysql user, and run initialize sql in remote web server
+- create config.php from config.example.php in remote web server
+- copy build folder into remote web server documentroot
+- copy public folder into remote web server documentroot (merge width build folder)
+- copy vendor folder into remote web server documentroot
 - set web server document root subdirs is readonly except "images", "work" and "uploads" folder
   

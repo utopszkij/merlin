@@ -17,10 +17,7 @@
  * 8. if it is the first record: write log
  * 9. send activator email (if two_factor include two_factor_secret and QRcode image)
  */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-include __DIR__.'/../objects/users.php';
+include __DIR__.'/../objects/user.php';
 session_id( Api::getRequest('sid') );
 session_start();
 header('Content-Type: application/json; charset=utf-8');
@@ -28,6 +25,6 @@ header('Access-Control-Allow-Origin:*');
 $userObj = new Users();
 $result = $userObj->initResult();
 $result->errorMsg = $userObj->doRegist();
-$result->ok = ($result->errorMsg == '');
+$result->ok = ($result->errormsg == '');
 echo JSON_encode($result);
 ?>

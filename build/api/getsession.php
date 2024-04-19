@@ -4,11 +4,17 @@
  * @params sid
  * @return {session:object}
  */
-session_id( $_POST['sid']);
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin:*');
+$result = new \stdClass();
+if (isset($_POST['sid'])) {
+    if ($_POST['sid'] > '0') {
+        session_id( $_POST['sid']);
+    }    
+}
 session_start();
 
-$result = new \stdClass();
-/* CHECK sid is valid? */
+/* CHECK sid is valid?  */
 if (isset($_SESSION['REMOTE_ADDR'])) {
     if (($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR']) |
         ($_SESSION['HTTP_USER_AGENT'] != $_SERVER['HTTP_USER_AGENT'])) {
@@ -19,12 +25,11 @@ if (isset($_SESSION['REMOTE_ADDR'])) {
         exit();
     }
 }
+
 $_SESSION['REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
 $_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
 
 $result->session = $_SESSION;
 $result->txt = 'getSession ';
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin:*');
 echo JSON_encode($result);
 ?>

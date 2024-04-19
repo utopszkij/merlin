@@ -151,13 +151,27 @@ export var common = {
      * @param token string
      * @returns string
      */
-    lng: (token:string): string => {
+    _lng: (token:string): string => {
         let w = token as keyof typeof common._lngTokens;
         if (common._lngTokens[w] === undefined) {
             return token;
         } else {
             return common._lngTokens[w];
         }
+    },
+
+    /**
+     * translate token by _lngTokens, process comma separated list
+     * @param token string
+     * @returns string
+     */
+    lng: (token:string): string => {
+        let w: Array<string> = token.split(',');
+        let i = 0;
+        for (i=0; i<w.length; i++) {
+            w[i] = common._lng(w[i]);								
+        }
+        return w.join(',');
     },
 
     /**
@@ -170,11 +184,28 @@ export var common = {
         return;
     },
 
-    callApi: (url:string, par:object, thenFun:CallableFunction):any => {
+
+    /*  File upload:
+        <script>
+        async function uploadFile() {
+            let formData = new FormData();           
+            formData.append("file", fileupload.files[0]);   // "fileupload" html input id and name
+            await fetch('/upload.php', {
+            method: "POST", 
+            body: formData
+            });    
+            alert('The file has been uploaded successfully.');
+        }
+        </script>
+        example: Register.tsx
+    */
+
+    callApi: (url:string, par:any, thenFun:CallableFunction):any => {
         if (axiosLog.length < 10) {
             axiosLog.push({'url':url, 'par':par})
         }
         if (_axiosResults.length === 0) {
+
             $('#waiting').show();
             let result = axios.post(config.SITEURL+'/public/'+url, 
                               par, 

@@ -5,4 +5,7 @@ public/config_test.php
 *.bfproject
 .buildpath
 vendor
-vendir/*
+vendor/*
+node_modules
+node_modules/*
+

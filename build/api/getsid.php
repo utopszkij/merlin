@@ -6,7 +6,7 @@
  */
 session_start();
 $result = new \stdClass();
-$result->id = session_id();
+$result->sid = session_id();
 $_SESSION['REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'];
 $_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
 header('Content-Type: application/json; charset=utf-8');

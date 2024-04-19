@@ -16,10 +16,13 @@ const Register = () => {
 	const [twofactor, setTwofactor] = useState('0');
 	const [accept, setAccept] = useState('0');
 	
-	const validator = (e:React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault(); // stop the submission
+	const validator = () => {
 
-		const formElement = e.target as HTMLFormElement;
+
+		console.log('validator start');
+		console.log(document);
+		console.log(document.getElementById('avatar'));
+
 		var lowerLetter = 0;
 		var numberChar = 0;
 		var specChar = 0;
@@ -70,23 +73,42 @@ const Register = () => {
 		} else {		
 			 common.callApi('api/registcheck',{
 				"sid":common.data('sid'),
-				"nick": username,
+				"username": username,
 				"email": email,
 				"userid":'0'
 			 },
 			 (res:any) => { 
 				if (res.ok) {
-					formElement.submit();
-				} else if (res.nickExists) {
-					  common.popupMsg( lng('USERNAME_EXISTS'));
-				} else if (res.emailExists) {
-					  common.popupMsg( lng('EMAIL_EXISTS'));
-				} else if (res.nickAndEmailExists) {
-					  common.popupMsg( lng('USERNAME_AND_EMAIL_EXISTS'));
+					let formData = new FormData();
+					formData.append('sid',common.data('sid'));
+					formData.append('username',username);
+					formData.append('email',email);
+					formData.append('userid','0');
+					formData.append('realname',realname);
+					formData.append('password',password);
+					formData.append('twofactor',twofactor);
+					formData.append('accept',accept);
+
+					// file upload processing
+					let avatar = document.getElementById('avatar') as HTMLInputElement;
+					let files = avatar?.files;
+					if (files) {
+						if (files.length > 0) {
+							formData.append('avatar',files[0]);   
+						}	
+					}
+					common.callApi('api/doregist.php',formData,
+					(res:any) => {
+						if (res.ok) {
+							common.popupMsg( lng('ACTIVATOR_EMAIL_SENDED') );
+						} else {
+							common.popupMsg(res.errorMsg);
+						}
+					});
+				} else {
+					common.popupMsg( lng(res.errorMsg) );
 				}	  
 			  })	
-			// formElement.submit();
-			alert('submit');
 		}
 	}
 
@@ -100,8 +122,8 @@ const Register = () => {
 						<span>{ lng('REGISTRATION') }</span>
 					</h1>
 				</div>	
-				<form name="registration" id="registForm" action="api/doregist.php" method="post" 
-				      encType="multipart/form-data" onSubmit={ validator }>
+				<form name="registration" id="registForm"  method="post" 
+				      encType="multipart/form-data">
 				<div className="row text-center">
 					<div className="col-12">
 					<label><em className="fa fa-user"></em>{ lng('USERNAME') }&nbsp;</label>
@@ -143,7 +165,7 @@ const Register = () => {
 					<div className="col-12">{ lng('AVATARFILE') }</div>
 					<div className="col-12">
 						<label><em className="fas fa-camera"></em>&nbsp;</label>
-						<input type="file" name="avatar" className="form-control"
+						<input type="file" name="avatar" id="avatar" className="form-control"
 						onChange={ (e) => setAvatar(e.target.value) }/>
 					</div>	
 				</div>	
@@ -175,7 +197,8 @@ const Register = () => {
 
 				<div className="row text-center">
 					<div className="col-12">
-						<button type="submit" className="btn btn-primary" name="submitbtn"> 
+						<button type="button" className="btn btn-primary" name="submitbtn"
+						    onClick={ validator }> 
 							<em className="fas fa-check"></em>&nbsp;{ lng('OK') }
 						</button>    
 					</div>
