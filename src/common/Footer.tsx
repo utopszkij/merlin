@@ -31,7 +31,7 @@ const Footer = () => {
                 href={'https://twitter.com/intent/tweet?&url='+encodeURI(document.location.href)}
                 role="button" target="_new"><i className="fab fa-twitter"></i></a>
 
-            <a className="btn btn-outline-light btn-floating m-1" title="url küldése gmail -en" id="shareMail"
+            <a className="btn btn-outline-light btn-floating m-1" title="url küldése e-mail -en" id="shareMail"
                 href={'https://mail.google.com/mail/?view=cm&body='+encodeURI(document.location.href)}
                 role="button" target="_new"><i className="fas fa-envelope"></i></a>
             </section>

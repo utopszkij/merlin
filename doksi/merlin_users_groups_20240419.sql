@@ -337,7 +337,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `realname`, `avatar`, `email_verifyed`, `status`, `two_factor`, `two_factor_secret`, `error_count`, `lock_time`) VALUES (1, 'algorithm', 'none', 'none', 'algorithm', 'none', 0, 'active', 0, '', 0, 0);
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `realname`, `avatar`, `email_verifyed`, `status`, `two_factor`, `two_factor_secret`, `error_count`, `lock_time`) VALUES (2, 'guest', 'none', 'none', 'guest', 'none', 0, 'active', 0, ' ', 0, 0);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `realname`, `avatar`, `email_verifyed`, `status`, `two_factor`, `two_factor_secret`, `error_count`, `lock_time`) VALUES (2, 'guest', 'none1', 'none1', 'guest', 'none', 0, 'active', 0, ' ', 0, 0);
 
 COMMIT;
 

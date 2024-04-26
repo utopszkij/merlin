@@ -1,11 +1,13 @@
-<?php
+    <?php
 /**
  * get session data
  * @params sid
  * @return {session:object}
  */
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin:*');
+if (!defined('UNITTEST')) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin:*');
+}    
 $result = new \stdClass();
 if (isset($_POST['sid'])) {
     if ($_POST['sid'] > '0') {

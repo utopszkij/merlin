@@ -3,14 +3,14 @@
  * api base object
  */
 use \RATWEB\DB;
-include __DIR__.'/../config.php';
-include __DIR__.'/db_'.DBTYPE.'.php';
+include_once __DIR__.'/db_'.DBTYPE.'.php';
 
 class LogRecord extends \RATWEB\DB\Record {
 	public int $id;
 	public string $time;
 	public int $users_id;
 	public int $parent_id;
+	public string $parent_table;
 	public string $event;
 }
 
@@ -191,6 +191,7 @@ class LogRecord extends \RATWEB\DB\Record {
 					 $logRecord->time = date('Y-m-d H:i:s');
 					 $logRecord->users_id = 1;
 					 $logRecord->parent_id = $record->id;
+					 $logRecord->parent_table = $this->tableName;
 					 $logRecord->event = 'insert '.$this->tableName.' '.JSON_encode($record);
 					 $dbLog->insert($logRecord);
 					 $result = $dbLog->error;
@@ -226,6 +227,8 @@ class LogRecord extends \RATWEB\DB\Record {
 						$logRecord->id = 0;
 						$logRecord->time = date('Y-m-d H:i:s');
 						$logRecord->users_id = $this->getSession('logedUser',1);
+						$logRecord->parent_id = $record->id;
+						$logRecord->parent_table = $this->tableName;
 						$logRecord->info = 'update '.$this->tableName.' old:'.JSON_encode($oldrecord).
 						   ' new:'.JSON_encode($record);
 						$dbLog->insert($logRecord);
@@ -265,6 +268,8 @@ class LogRecord extends \RATWEB\DB\Record {
 						 $logRecord->id = 0;
 						 $logRecord->time = date('Y-m-d H:i:s');
 						 $logRecord->users_id = $this->getSession('logedUser',0);
+						 $logRecord->parent_id = $record->id;
+						 $logRecord->parent_table = $this->tableName;
 						 $logRecord->info = 'delete '.$this->tableName.' '.JSON_encode($oldRecord);
 						 $dbLog->insert($logRecord);
 						 $result = $dbLog->error;
@@ -294,7 +299,7 @@ class LogRecord extends \RATWEB\DB\Record {
 
 		protected function clearFileName($s) {
 			// string érvényes filenévvé alakítása
-			return preg_replace("/[^a-z0-9._-]/", '', strtolower(remove_accent($s)));
+			return preg_replace("/[^a-z0-9._-]/", '', strtolower($this->remove_accent($s)));
 		}
 		
 
@@ -305,7 +310,7 @@ class LogRecord extends \RATWEB\DB\Record {
 		 * @param arryay $extensions  example:['pmg','jpg','jpeg']
 		 * @return {fileNames:[], errorMsg:''}
 		 */
-		public function upoladFiles(string $fileNamePrefix,
+		public function uploadFiles(string $fileNamePrefix,
 			string $uploadDir,
 			array $extensions,
 			): object {
@@ -318,7 +323,7 @@ class LogRecord extends \RATWEB\DB\Record {
 			}
 			$_uploadDir .= '/'.$fileNamePrefix;
 			foreach ($_FILES as $fn => $fv) {
-				$fileName = clearFileName(basename($_FILES[$fn]['name']));
+				$fileName = $this->clearFileName(basename($_FILES[$fn]['name']));
 				$uploadFile = $_uploadDir . $fileName;
 
 				$uploadFileExt = pathinfo($uploadFile,PATHINFO_EXTENSION);
@@ -337,6 +342,7 @@ class LogRecord extends \RATWEB\DB\Record {
 					return $result;
 				}
 			}
+			return $result;
  		} 
  }	
 ?>

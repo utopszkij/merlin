@@ -247,7 +247,6 @@ const Login = () => {
 					</div>	
 				</div>	
 			</form>
-			<div className="alert alert-info">{ lng('REGISTHELP2') }</div>
 			<div className="row">
 				<div className="col-12 text-center">
 					<button type="button" id="doRegister" onClick={ registClick } className="btn btn-secondary">

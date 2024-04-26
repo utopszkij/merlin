@@ -152,12 +152,16 @@ export var common = {
      * @returns string
      */
     _lng: (token:string): string => {
-        let w = token as keyof typeof common._lngTokens;
-        if (common._lngTokens[w] === undefined) {
-            return token;
+        if (token) {
+            let w = token as keyof typeof common._lngTokens;
+            if (common._lngTokens[w] === undefined) {
+                return token;
+            } else {
+                return common._lngTokens[w];
+            }
         } else {
-            return common._lngTokens[w];
-        }
+            return 'undefined(1)';
+        }    
     },
 
     /**
@@ -166,12 +170,16 @@ export var common = {
      * @returns string
      */
     lng: (token:string): string => {
-        let w: Array<string> = token.split(',');
-        let i = 0;
-        for (i=0; i<w.length; i++) {
-            w[i] = common._lng(w[i]);								
+        if (token) {
+            let w: Array<string> = token.split(',');
+            let i = 0;
+            for (i=0; i<w.length; i++) {
+                w[i] = common._lng(w[i]);								
+            }
+            return ''+w.join(',');
+        } else {
+            return 'undefined(2)';
         }
-        return w.join(',');
     },
 
     /**
@@ -207,7 +215,7 @@ export var common = {
         if (_axiosResults.length === 0) {
 
             $('#waiting').show();
-            let result = axios.post(config.SITEURL+'/public/'+url, 
+            let result = axios.post(config.SITEURL+'/'+url, 
                               par, 
                               {
                                 headers: {

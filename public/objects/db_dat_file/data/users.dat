@@ -1,0 +1,3 @@
+{"name":"algkoritm","email":"nome","id":1}
+{"name":"guest","email":"nome","id":2}
+{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$TLpXN6A0mzt4OJNugWrGa.CykYm6fAgDPHfETarj\/Bwq3\/aimQtqC","realname":"Test Elek","avatar":"","status":"notActivated","email_verifyed":0,"two_factor":1,"two_factor_secret":"","error_count":0,"lock_time":0}

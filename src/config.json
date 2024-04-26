@@ -1,9 +1,10 @@
 {
-    "SITEURL":"http://localhost/merlin",
+    "SITEURL":"http://localhost/merlin/public",
     "SITENAME":"Merlin framework",
     "ADATKEZELO":"Adatkezelő neve<br>Címe<br>web site",
     "ADATFELDOLGOZO":"Adatfeldolgozó neve<br>Címe<br>web site",
     "SIGNO":"Aláírás és dátum",
-    "COOKIE_EXPIRE_DAYS": 10
-
+    "COOKIE_EXPIRE_DAYS": 10,
+    "UPLOAD_LIMIT": 2,
+    "IMAGE_FILTER":["jpg","jpeg","png","gif","webp"]
 }

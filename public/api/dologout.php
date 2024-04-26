@@ -4,10 +4,12 @@
  * @params sid
  * @return {loged:false} 
  */
-session_id( $_POST['sid']);
-session_start();
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin:*');
+if (!defined('UNITTEST')) {
+	session_id( $_POST['sid']);
+	session_start();
+	header('Content-Type: application/json; charset=utf-8');
+	header('Access-Control-Allow-Origin:*');
+}
 $result = new \stdClass();
 $result->loged=0;
 $result->id='';

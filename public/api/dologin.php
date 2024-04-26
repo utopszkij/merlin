@@ -19,10 +19,17 @@
  * store session (1): logedUser:{loged:false, id:'xxxx', twoFactor:true}  
  * store session (2): logedUser:{loged:true, id:'xxx', nick:'xxx', avatar:'xxx', groups:'xxx,xxx,xxx'}
  */
-session_id( $_POST['sid'] );
-session_start();
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin:*');
+if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}    
+if (!defined('UNITTEST')) {
+	session_id( $_POST['sid'] );
+	session_start();
+	header('Content-Type: application/json; charset=utf-8');
+	header('Access-Control-Allow-Origin:*');
+}
 $result = new \stdClass();
 $result->loged=false;
 $result->id='';

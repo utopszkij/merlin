@@ -32,8 +32,12 @@ You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
+Launches the REACT test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `phpunit public/tests`
+
+Launches the PHP test 
 
 ### `npm run build`
 
@@ -62,7 +66,7 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Install into developer test server
+## Install into local developer test server
 
 - cd developer web server parent of docroot (example: /var/www/html)
 - clone repo
@@ -73,14 +77,15 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 - run database init sql
 - create config.php from config.example.php
   
-## install ino remote public web server
+## install ito remote public web server from local developer server
 
 - cd developer' repo root
 - npm build
+- copy build folder into remote web server documentroot 
 - create mysql database and mysql user, and run initialize sql in remote web server
 - create config.php from config.example.php in remote web server
-- copy build folder into remote web server documentroot
 - copy public folder into remote web server documentroot (merge width build folder)
 - copy vendor folder into remote web server documentroot
 - set web server document root subdirs is readonly except "images", "work" and "uploads" folder
   
+

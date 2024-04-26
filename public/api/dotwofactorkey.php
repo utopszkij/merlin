@@ -10,10 +10,12 @@
  * 9. OK --> a sessionba tárol, return
  * session: logedUser:{loged:true, id:'xxx', nick:'xxx', avatar:'xxx', groups:'xxx'}
  */
-session_id( $_POST['sid'] );
-session_start();
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin:*');
+if (!defined('UNITTEST')) {
+	session_id( $_POST['sid'] );
+	session_start();
+	header('Content-Type: application/json; charset=utf-8');
+	header('Access-Control-Allow-Origin:*');
+}	
 $result = new \stdClass();
 $result->loged=false;
 $result->id='';
