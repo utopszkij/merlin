@@ -29,7 +29,9 @@ class LogRecord extends \RATWEB\DB\Record {
 		
 		function __construct() {
 			$this->db = new \RATWEB\DB\Query($this->tableName);
-			if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
+			// check session - exlude local test and activator,
+			// set error dispay
+			if (($_SERVER['REMOTE_ADDR'] != '127.0.0.1') && (!isset($_GET['code']))){
 				if (($this->getSession('REMOTE_ADDR') != $_SERVER['REMOTE_ADDR']) |
 					($this->getSession('HTTP_USER_AGENT') != $_SERVER['HTTP_USER_AGENT'])) {
 					// session id is invalid!
@@ -39,6 +41,8 @@ class LogRecord extends \RATWEB\DB\Record {
 					echo JSON_encode($result);
 					exit();
 				}
+				ini_set('display_errors', 0);
+				ini_set('display_startup_errors', 0);
 			} else {
 				ini_set('display_errors', 1);
 				ini_set('display_startup_errors', 1);

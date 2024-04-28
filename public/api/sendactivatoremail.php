@@ -1,8 +1,8 @@
 <?php
 /**
  * send activator email
- * @params sid, email
- * @return {mailsended:true|false}
+ * @params sid, email|username
+ * @return {errorMsg, ok}
  */
 if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
     ini_set('display_errors', 1);
@@ -22,12 +22,18 @@ $userObj = new Users();
 $result = $userObj->initResult();
 $id = 0;
 $q = new \RATWEB\DB\Query('users');
-$user = $q->where('email','=', $userObj->getRequest('email',''));
-if (isset($user->id)) {
-	$id = $user->id;
+$user = $q->where('email','=', Api::getRequest('email'))->first();
+if (!isset($user->id)) {
+	$q = new \RATWEB\DB\Query('users');
+	$user = $q->where('username','=',Api::getRequest('email'))->first();
 }
-$result->errorMsg = $userObj->sendActivatorEmail( $id );
-$result->ok = ($result->errorMsg == '');
+if (isset($user->id)) {
+	$result->errorMsg = $userObj->sendActivatorEmail( $user->id );
+	$result->ok = ($result->errorMsg == '');
+} else {
+	$result->errorMsg = 'NOT_FOUND(1) '.Api::getRequest('email');
+	$result->ok = false;
+}	
 echo JSON_encode($result);
 
 ?>

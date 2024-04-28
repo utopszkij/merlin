@@ -120,13 +120,11 @@ class Users extends Api {
 
     /**
      * send email
-     * @param int $userId
+     * @param string $userId
      * @return string empty|errorMsg
      */
     public function sendActivatorEmail(int $userId): string {
         $result = '';
-        //Import PHPMailer classes into the global namespace
-        //These must be at the top of your script, not inside a function
 
         //Create an instance; passing `true` enables exceptions
         $mail = new PHPMailer(true);
@@ -134,20 +132,14 @@ class Users extends Api {
         $user = $q->where('id','=',$userId)->first();
         if (isset($user->id)) {
             $email = $user->email;
-            $code = $user->two_factor_secret.'-'.password_hash($user->id);
+            $code = $user->two_factor_secret.'-'.password_hash($user->id,0);
             $two_factor = $user->two_factor;
             $two_factor_secret = $user->two_factor_secret;
         } else {
-            $email = 'tibor.fogler@gmail.com';
-            $code = '123456';
-            $two_factor = 0;
-            $two_factor_secret = '123456';
+            $result = 'NOT_FOUND';
+            return $result;
         }
-        
-        $email = 'tibor.fogler@gmail.com';
-
         $ga = new PHPGangsta_GoogleAuthenticator();
-
         $mailBody = '<div>
         <h2>'.SITETITLE.'</h2>
         <h3>'.SITEURL.'</h3>
@@ -324,7 +316,28 @@ class Users extends Api {
         return $result;
     }
 
-
+    /**
+     * process account activator 
+     * @param string $two_factor_secret
+     * @param string id hash
+     */
+    public function activator(string $two_factor_secret, string $hash): string {
+        $result = '';
+        $q = new \RATWEB\DB\Query('users');
+        $res = $q->where('two_factor_secret','=',$two_factor_secret)->first();
+        if (isset($res->id)) {
+            if (password_verify($res->id, $hash)) {
+                $res->status = 'enabled';
+                $res->email_verifyed = 1;
+                $q->where('id','=',$res->id)->update($res);
+            } else {
+                $result = 'CODE_HASH_ERROR '.$res->id.' '.$hash.' '.password_hash($res->id,0);
+            }
+        } else {
+            $result = 'ACCOUNT_NOT_FOUND';
+        }
+        return $result;
+    }
 
 }
 ?>

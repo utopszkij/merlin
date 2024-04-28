@@ -17,7 +17,7 @@ type DoLoginResult = {
 
 type MailSenderResult = {
 	data:{
-		mailsended:boolean
+		errorMsg:string
 	}
 }
 
@@ -106,10 +106,10 @@ const Login = () => {
 			'sid': sid,
 			'email': email},
 		(res:MailSenderResult) => { 
-			if (res.data.mailsended) {
+			if (res.data.errorMsg == '') {
 				common.popupMsg(lng('EMAIL_SENDED'), msgStyle.success);
 			} else {
-				common.popupMsg(lng('WRONG_DATA'), msgStyle.error);
+				common.popupMsg(lng(res.data.errorMsg), msgStyle.error);
 			}	
 		});	
 	}
@@ -126,10 +126,10 @@ const Login = () => {
 			'sid': sid,
 			'email': email},
 		(res:MailSenderResult) => { 
-			if (res.data.mailsended) {
+			if (res.data.errorMsg == '') {
 				common.popupMsg(lng('EMAIL_SENDED'), msgStyle.success);
 			} else {
-				common.popupMsg(lng('WRONG_DATA'), msgStyle.error);
+				common.popupMsg(lng(res.data.errorMsg), msgStyle.error);
 			}	
 		});	
 	}
