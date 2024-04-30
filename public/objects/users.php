@@ -171,29 +171,88 @@ class Users extends Api {
         <p> </p>';
         $mailBody .= '</div>';
 
-        
-        try {
-            $mail->isSMTP();                              //Send using SMTP
-            $mail->Host       = MAIL_HOST;                //Set the SMTP server to send through
-            $mail->SMTPAuth   = true;                     //Enable SMTP authentication
-            $mail->Username   = MAIL_USERNAME;            //SMTP username
-            $mail->Password   = MAIL_PASSWORD;            //SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
-            $mail->Port       = MAIL_PORT;                   //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-			$mail->CharSet    = 'utf-8';
-            $mail->setFrom(MAIL_FROM_ADDRESS);
-            $mail->addAddress($email);     //Add a recipient
-            $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = SITETITLE.' fiok aktivalas (account activate)';
-            $mail->Body    = $mailBody;
-            $mail->AltBody = strip_tags($mailBody);
-            $mail->send();
+        if (defined('UNITTEST')) {
             $result = '';
-        } catch (Exception $e) {
-            $result = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        } else {
+            try {
+                $mail->isSMTP();                              //Send using SMTP
+                $mail->Host       = MAIL_HOST;                //Set the SMTP server to send through
+                $mail->SMTPAuth   = true;                     //Enable SMTP authentication
+                $mail->Username   = MAIL_USERNAME;            //SMTP username
+                $mail->Password   = MAIL_PASSWORD;            //SMTP password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
+                $mail->Port       = MAIL_PORT;                   //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+                $mail->CharSet    = 'utf-8';
+                $mail->setFrom(MAIL_FROM_ADDRESS);
+                $mail->addAddress($email);     //Add a recipient
+                $mail->isHTML(true);                                  //Set email format to HTML
+                $mail->Subject = SITETITLE.' fiok aktivalas (account activate)';
+                $mail->Body    = $mailBody;
+                $mail->AltBody = strip_tags($mailBody);
+                $mail->send();
+                $result = '';
+            } catch (Exception $e) {
+                $result = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
         }
         return $result;
     }
+
+    /**
+     * create new password and send new password email
+     * @param string $userId
+     * @return string empty|errorMsg
+     */
+    public function forgetPassword(int $userId): string {
+        $result = '';
+
+        $mail = new PHPMailer(true);
+        $q = new \RATWEB\DB\Query('users');
+        $user = $q->where('id','=',$userId)->first();
+        if (isset($user->id)) {
+            $newPassword = 'NP'.substr(md5($user->id.rand(1000,9999)),0,5).rand(100,999).'!';
+            $user->password = password_hash($newPassword,0);
+            $q->where('id','=', $userId)->update($user);
+        } else {
+            $result = 'NOT_FOUND';
+            return $result;
+        }
+        $mailBody = '<div>
+        <h2>'.SITETITLE.'</h2>
+        <h3>'.SITEURL.'</h3>
+        <p>Új jelszó( new password)</p>
+        <h3>'.$newPassword.'</h3>
+        <p> </p>
+        <p>Bejelentkezés után a "profil" oldaladon változtasd meg! </p>';
+        $mailBody .= '</div>';
+
+        if (defined('UNITTEST')) {
+            $result = '';
+        } else {
+            try {
+                $mail->isSMTP();                              //Send using SMTP
+                $mail->Host       = MAIL_HOST;                //Set the SMTP server to send through
+                $mail->SMTPAuth   = true;                     //Enable SMTP authentication
+                $mail->Username   = MAIL_USERNAME;            //SMTP username
+                $mail->Password   = MAIL_PASSWORD;            //SMTP password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
+                $mail->Port       = MAIL_PORT;                   //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+                $mail->CharSet    = 'utf-8';
+                $mail->setFrom(MAIL_FROM_ADDRESS);
+                $mail->addAddress($user->email);     //Add a recipient
+                $mail->isHTML(true);                                  //Set email format to HTML
+                $mail->Subject = SITETITLE.' új jelszó (new password)';
+                $mail->Body    = $mailBody;
+                $mail->AltBody = strip_tags($mailBody);
+                $mail->send();
+                $result = '';
+            } catch (Exception $e) {
+                $result = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+        }
+        return $result;
+    }
+
 
     /**
      * process logout

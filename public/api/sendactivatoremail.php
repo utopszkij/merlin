@@ -30,8 +30,11 @@ if (!isset($user->id)) {
 if (isset($user->id)) {
 	$result->errorMsg = $userObj->sendActivatorEmail( $user->id );
 	$result->ok = ($result->errorMsg == '');
+	if ($result->ok) {
+		$result->errorMsg = 'EMAIL_SENDED';
+	}
 } else {
-	$result->errorMsg = 'NOT_FOUND(1) '.Api::getRequest('email');
+	$result->errorMsg = 'NOT_FOUND';
 	$result->ok = false;
 }	
 echo JSON_encode($result);

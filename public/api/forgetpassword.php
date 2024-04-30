@@ -1,31 +1,42 @@
 <?php
 /**
- * forget password
- * create random password, save it into database, send new password in email
- * @params sid, email
- * @return {mailsended:true|false}
+ * forget password send new password email
+ * @params sid, email|username
+ * @return {errorMsg, ok}
  */
+if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}    
+if (!defined('SITETITLE')) include_once __DIR__.'/../config.php';
+include_once __DIR__.'/../objects/users.php';
+include_once __DIR__.'/../../vendor/autoload.php';
 if (!defined('UNITTEST')) {
-	session_id( $_POST['sid']);
+	session_id( Api::getRequest('sid','0'));
 	session_start();
 	header('Content-Type: application/json; charset=utf-8');
 	header('Access-Control-Allow-Origin:*');
 }	
-$result = new \stdClass();
-$result->mailsended=false;
-
-/* CHECH sid is valid? */
-if (($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR']) |
-    ($_SESSION['HTTP_USER_AGENT'] != $_SERVER['HTTP_USER_AGENT'])) {
-	// session id is invalid!
-	$result->errorMsg = 'SESSION_INVALID';
-	echo JSON_encode($result);
-	exit();
+$userObj = new Users();
+$result = $userObj->initResult();
+$id = 0;
+$q = new \RATWEB\DB\Query('users');
+$user = $q->where('email','=', Api::getRequest('email'))->first();
+if (!isset($user->id)) {
+	$q = new \RATWEB\DB\Query('users');
+	$user = $q->where('username','=',Api::getRequest('email'))->first();
 }
-
-//+ TEST
-$result->mailsended=true;
-//- TEST
-
+if (isset($user->id)) {
+	$result->errorMsg = $userObj->forgetPassword( $user->id );
+	$result->ok = ($result->errorMsg == '');
+	if ($result->ok) {
+		$result->errorMsg = 'EMAIL_SENDED';
+	}
+} else {
+	$result->errorMsg = 'NOT_FOUND';
+	$result->ok = false;
+}	
 echo JSON_encode($result);
+
 ?>

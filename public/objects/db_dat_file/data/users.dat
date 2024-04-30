@@ -1,3 +1,3 @@
-{"name":"algkoritm","email":"nome","id":1}
-{"name":"guest","email":"nome","id":2}
-{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$TLpXN6A0mzt4OJNugWrGa.CykYm6fAgDPHfETarj\/Bwq3\/aimQtqC","realname":"Test Elek","avatar":"","status":"notActivated","email_verifyed":0,"two_factor":1,"two_factor_secret":"","error_count":0,"lock_time":0}
+{"name":"algkoritm","email":"nome","two_factor":0,"two_factor_secret":"","id":1,"password":"$2y$10$ce4vCuCoqkov46UQ7vp0m.\/hFeN6MuhWL.dsaD3Tr351bb49Fpvma"}
+{"name":"guest","email":"nome","two_factor":0,"two_factor_secret":"","id":2}
+{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$nVwWzqU4t1N7VyT6\/VqVU.C6GouZBDHEcUykVIMZLZ7ZXC7tSf2vu","realname":"Test Elek","avatar":"","status":"notActivated","email_verifyed":0,"two_factor":1,"two_factor_secret":"OONKI47RBAY5BORR","error_count":0,"lock_time":0}

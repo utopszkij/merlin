@@ -114,12 +114,12 @@ describe('Test Login component', () => {
     act( () => {
       let w1 = el.querySelector('#email');
       w1?fireEvent.change(w1, {target: {value: '23'}}): noop;
-      common.pushAxiosResult({data:{mailsended:false}});
+      common.pushAxiosResult({data:{errorMsg:'NOT_FOUND'}});
       let btn = el.querySelector('#forgetPassword');
       expect(btn).toBeTruthy();
       btn?fireEvent.click(btn): console.log('btn not found'); 
     });
-    expect(document.body.innerHTML.indexOf('WRONG_DATA')).toBeGreaterThan(0);
+    expect(document.body.innerHTML.indexOf('NOT_FOUND')).toBeGreaterThan(0);
     expect(axiosLog[0].url).toEqual('api/forgetpassword.php');
   })
   
@@ -129,7 +129,7 @@ describe('Test Login component', () => {
     act( () => {
       let w1 = el.querySelector('#email');
       w1?fireEvent.change(w1, {target: {value: '23'}}): noop;
-      common.pushAxiosResult({data:{mailsended:true}});
+      common.pushAxiosResult({data:{errorMsg:''}});
       let btn = el.querySelector('#forgetPassword');
       expect(btn).toBeTruthy();
       btn?fireEvent.click(btn): console.log('btn not found'); 
@@ -156,10 +156,10 @@ describe('Test Login component', () => {
       w1?fireEvent.change(w1, {target: {value: '23'}}): noop;
       let btn = el.querySelector('#resendEmail');
       expect(btn).toBeTruthy();
-      common.pushAxiosResult({data:{mailsended:false}})
+      common.pushAxiosResult({data:{errorMsg:'NOT_FOUND'}})
       btn?fireEvent.click(btn): console.log('btn not found'); 
     });
-    expect(document.body.innerHTML.indexOf('WRONG_DATA')).toBeGreaterThan(0);
+    expect(document.body.innerHTML.indexOf('NOT_FOUND')).toBeGreaterThan(0);
     expect(axiosLog[0].url).toEqual('api/sendactivatoremail.php');
   })
   
@@ -170,7 +170,7 @@ describe('Test Login component', () => {
       w1?fireEvent.change(w1, {target: {value: '23'}}): noop;
       let btn = el.querySelector('#resendEmail');
       expect(btn).toBeTruthy();
-      common.pushAxiosResult({data:{mailsended:true}})
+      common.pushAxiosResult({data:{errorMsg:''}})
       btn?fireEvent.click(btn): console.log('btn not found'); 
     });
     expect(document.body.innerHTML.indexOf('EMAIL_SENDED')).toBeGreaterThan(0);

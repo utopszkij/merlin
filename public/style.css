@@ -6,6 +6,7 @@
       .form input {display:inline-block; width:auto; min-width:20px;}
       .form select {display:inline-block; width:auto}
       .form input[type=checkbox] {border-color:black}
+      .is-invalid {border-color:red}
 
       #scrolltotop {position:fixed; z-index:99; right:10px; bottom:10px; opacity:0.5; background-color:#CFF4FC}
 

@@ -65,10 +65,14 @@ const Login = () => {
 	common.setCookie('logedNick','',10);
 	common.setCookie('logedAvatar','',10);
 	common.setCookie('logedGroups','',10);
+	$('#email').removeClass('is-invalid');
+	$('#password').removeClass('is-invalid');
 	if (email === '') {
 		common.popupMsg(lng('NICK_OR_EMAIL_REQUIRED'), msgStyle.error);
+		$('#email').addClass('is-invalid');
 	} else if (password === '') {
 		common.popupMsg(lng('PASSWORD_REQUIRED')+'/'+password+'/', msgStyle.error);
+		$('#password').addClass('is-invalid');
 	} else {
 		common.callApi('api/dologin.php',{
 			'sid': sid,

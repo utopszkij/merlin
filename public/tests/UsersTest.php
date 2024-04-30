@@ -14,8 +14,11 @@ include_once __DIR__.'/../objects/db_dat_file.php';
 class UsersTest extends TestCase {
 
     protected $users;
+
 	// ez csak egyszer fut
 	public function test_start()  {
+		$q = new \RATWEB\DB\Query('users');
+		$q->drop();
 		$this->assertEquals('','');
     }
 
@@ -25,8 +28,6 @@ class UsersTest extends TestCase {
 	}
 
 	public function test_registcheck_ok() {
-		$q = new \RATWEB\DB\Query('users');
-		$q->drop();
         $this->users = new Users();
         $res = $this->users->checkRegist('assaegb','asddfgr');
 		$this->assertEquals($res,'');
@@ -56,8 +57,8 @@ class UsersTest extends TestCase {
 		$q = new \RATWEB\DB\Query('users');
 		$q->drop();
 		// dbinit kialakítása (in dat_file interface not required all field)
-		$q->insert(JSON_decode('{"name":"algkoritm","email":"nome"}'));
-		$q->insert(JSON_decode('{"name":"guest","email":"nome"}'));
+		$q->insert(JSON_decode('{"name":"algkoritm","email":"nome","two_factor":0, "two_factor_secret":""}'));
+		$q->insert(JSON_decode('{"name":"guest","email":"nome","two_factor":0, "two_factor_secret":""}'));
 		
 		$q = new \RATWEB\DB\Query('members');
 		$q->drop();
@@ -93,6 +94,30 @@ class UsersTest extends TestCase {
         $this->users = new Users();
 		$res = $this->users->doregist();
 		$this->assertEquals($res,'USERNAME_EXISTS,EMAIL_EXISTS');
+	}
+
+	public function test_forgetpassword_wrongData() {
+        $this->users = new Users();
+		$res = $this->users->forgetpassword(1234);
+		$this->assertEquals($res,'NOT_FOUND');
+	}
+
+	public function test_forgetpassword_correctData() {
+        $this->users = new Users();
+		$res = $this->users->forgetpassword(1);
+		$this->assertEquals($res,'');
+	}
+
+	public function test_sendActivatorEmail_wrongData() {
+        $this->users = new Users();
+		$res = $this->users->sendActivatorEmail(1934);
+		$this->assertEquals($res,'NOT_FOUND');
+	}
+
+	public function test_sendActivatorEmail_correctData() {
+        $this->users = new Users();
+		$res = $this->users->sendActivatorEmail(1);
+		$this->assertEquals($res,'');
 	}
 
 }
