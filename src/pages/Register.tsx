@@ -28,6 +28,12 @@ const Register = () => {
 		var numberChar = 0;
 		var specChar = 0;
 		var capitalChar = 0;
+		$('#email').removeClass('is-invalid');
+		$('#username').removeClass('is-invalid');
+		$('#realname').removeClass('is-invalid');
+		$('#email').removeClass('is-invalid');
+		$('#accept').removeClass('is-invalid');
+		$('#password').removeClass('is-invalid');
 	
 		// Validate lowercase letters
 		var lowerCaseLetters = /[a-zöüóőúéáűí]/g;
@@ -63,24 +69,30 @@ const Register = () => {
 		let w:Array<string> = [];
 		if (accept === '0') {
 			 w.push('ACCEPT_REQUIRED');
+			 $('#accept').addClass('is-invalid');
 		}	 
 		if (password !== password2) {
 			w.push('TWO_PASSWORD_NOT_EQUALS');
+			$('#password').addClass('is-invalid');
 		}	
 		if (username == '') {
 			w.push('USERNAME_REQUIRED');
+			$('#username').addClass('is-invalid');
 		}
 		if (realname == '') {
 			w.push('REALNAME_REQUIRED');
+			$('#realname').addClass('is-invalid');
 		}
 		if (email == '') {
 			w.push('EMAIL_REQUIRED');
+			$('#email').addClass('is-invalid');
 		}
 		if ((lowerLetter === 0) ||
 		    (capitalChar === 0) ||
 		    (numberChar === 0) ||
 		    (specChar === 0)) {
 			w.push('PASSWORD_INVALID');
+			$('#password').addClass('is-invalid');
 		}
 		let avatar = document.getElementById('avatar') as HTMLInputElement;
 		let files = avatar?.files;
@@ -174,21 +186,21 @@ const Register = () => {
 				<div className="row text-center">
 					<div className="col-12">
 					<label><em className="fa fa-key"></em>{ lng('PASSWORD_RETYPE') }*&nbsp;</label>
-					<input type="password" name="password2" 
+					<input type="password" name="password2" id="password2"
 					className="form-control password" onChange={ (e) => setPassword2(e.target.value) }/>
 					</div>	
 				</div>	
 				<div className="row text-center">
 					<div className="col-12">
 					<label><em className="fas fa-id-badge"></em>{ lng('REALNAME') }*&nbsp;</label>
-					<input type="text" name="realname" 
+					<input type="text" name="realname" id="realname"
 					required className="form-control" onChange={ (e) => setRealname(e.target.value) }/>
 					</div>	
 				</div>	
 				<div className="row text-center">
 					<div className="col-12">
 					<label><em className="fas fa-envelope"></em>{ lng('EMAIL') }*&nbsp;</label>
-					<input type="email" name="email" 
+					<input type="email" name="email" id="email"
 					required className="form-control" onChange={ (e) => setEmail(e.target.value) }/>
 					</div>	
 				</div>	
@@ -216,7 +228,7 @@ const Register = () => {
 
 				<div className="row text-center">
 					<div className="col-12">
-						<input type="checkbox" className="form-check-input" name="accept" value="1" 
+						<input type="checkbox" className="form-check-input" name="accept" id="accept" value="1" 
 						onChange={ (e) => setAccept(e.target.value) }/>
 						<strong>{ lng('POLICYACCEPT') }</strong>
 						<br />

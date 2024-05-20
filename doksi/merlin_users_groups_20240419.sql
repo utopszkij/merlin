@@ -69,7 +69,7 @@ ENGINE = InnoDB;
 -- Table `groups_log`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `groups_log` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `parent_id` BIGINT NOT NULL,
   `time` DATETIME NOT NULL,
   `event` TEXT NOT NULL COMMENT 'eventType  infos',
@@ -114,7 +114,7 @@ DEFAULT CHARACTER SET = armscii8;
 -- Table `iplocks`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `iplocks` (
-  `id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
   `ip` VARCHAR(64) NOT NULL,
   `error_count` INT NOT NULL DEFAULT 0,
   `lock_time` INT NULL DEFAULT 0 COMMENT '0 - not locked | lock time start',

@@ -68,7 +68,7 @@ describe('Test Login component', () => {
       w1?fireEvent.change(w1, {target: {value: '23'}}): noop;
       let w2 = el.querySelector('#password');
       w2?fireEvent.change(w2, {target: {value: '23'}}): noop;
-      common.pushAxiosResult({data:{loged:false, errorMsg:'testMsg'}});
+      common.pushAxiosResult({data:{ok:false, errorMsg:'testMsg'}});
       let btn = el.querySelector('#doLogin');
       expect(btn).toBeTruthy();
       btn?fireEvent.click(btn): console.log('btn not found'); 
@@ -84,7 +84,7 @@ describe('Test Login component', () => {
       w1?fireEvent.change(w1, {target: {value: '23'}}): noop;
       let w2 = el.querySelector('#password');
       w2?fireEvent.change(w2, {target: {value: '23'}}): noop;
-      common.pushAxiosResult({data:{loged:true, id:'123', nick:'user1', avatar:'avatar1', groups:'registered, admin'}});
+      common.pushAxiosResult({data:{ok:true, id:'123', nick:'user1', avatar:'avatar1', groups:'registered, admin'}});
       let btn = el.querySelector('#doLogin');
       expect(btn).toBeTruthy();
       btn?fireEvent.click(btn): console.log('btn not found'); 

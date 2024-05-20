@@ -3,6 +3,8 @@ declare(strict_types=1);
 DEFINE('SITETITLE','Merlin');
 DEFINE('SITEURL','https://valami.hu');
 DEFINE('DBTYPE','mysql');
+DEFINE('ERRORLIMIT',5); // if errorCounter > 5 lock user/ip
+DEFINE('LOCKTIME',300); // lock time sec
 
 // MYSQL
 DEFINE('HOST','localhost');

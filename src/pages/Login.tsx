@@ -6,12 +6,12 @@ import $ from 'jquery';
   
 type DoLoginResult = {
 	data:{
-		loged:boolean,
+		ok:boolean,
 		errorMsg:string,
 		id:string,
 		nick:string,
 		avatar:string,
-		groups:string    // list of groupIds
+		groups:string    // [{group_id, rank, name},...]
 	}
 }
 
@@ -71,7 +71,7 @@ const Login = () => {
 		common.popupMsg(lng('NICK_OR_EMAIL_REQUIRED'), msgStyle.error);
 		$('#email').addClass('is-invalid');
 	} else if (password === '') {
-		common.popupMsg(lng('PASSWORD_REQUIRED')+'/'+password+'/', msgStyle.error);
+		common.popupMsg(lng('PASSWORD_REQUIRED'), msgStyle.error);
 		$('#password').addClass('is-invalid');
 	} else {
 		common.callApi('api/dologin.php',{
@@ -79,7 +79,7 @@ const Login = () => {
 			'email': email,
 			'password':password},
 		(res:DoLoginResult) => { 
-			if (res.data.loged) {
+			if (res.data.ok) {
 				successLogin(res);
 			} else {
 				if (res.data.errorMsg == 'TWO_FACTOR') {
@@ -143,12 +143,12 @@ const Login = () => {
 	* user send two factor key
 	*/
    const doTwoFactorKey = () => {
-		common.callApi('api/dotwofactorkey',{
+		common.callApi('api/dotwofactorkey.php',{
 			'sid':sid,
 			'key':key
 		}, 
 		(res:DoLoginResult) => {
-			if (res.data.loged) {
+			if (res.data.ok) {
 				successLogin(res);
 			} else {
 				common.popupMsg(lng(res.data.errorMsg), msgStyle.error);
@@ -224,7 +224,7 @@ const Login = () => {
 				</div>	
 				<div className="row text-center">
 					<div className="col-12">
-						<a href="./poliicy" target="_new">{ lng('ACCEPT1') }</a>&nbsp;
+						<a href="./policy" target="_new">{ lng('ACCEPT1') }</a>&nbsp;
 						{ lng('ACCEPT2')}
 					</div>
 				</div>	

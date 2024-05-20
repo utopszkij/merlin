@@ -258,7 +258,7 @@ class Query extends \Where {
     protected function doJoin($recs, $join): array {
         $result = [];
         $joinType = $join[0];
-        $joinSource = new Collection($join[1]);
+        $joinSource = new \Collection($join[1]);
         $sourceField = $join[2]; 
         $joinedField = $join[3];
         $joinAlias = $join[4];
@@ -426,17 +426,14 @@ class Query extends \Where {
                 $recs = array_merge($recs, $recs1);
             }
         }  
-
         // join kezelés 
         if (count($this->joins) > 0) {
             foreach ($this->joins as $join) {
                 $recs = $this->doJoin($recs, $join);
             }
         }
-
         // where feltétel kezelés
         $recs = $this->doWhere($recs);
-
         // rendezés
         if (count($this->orderBy) > 0) {
             for ($i = 0; $i < count($recs); $i++) {
@@ -464,7 +461,6 @@ class Query extends \Where {
                 return 0;
             });
         }    
-
         // kiegészités a függvény oszlopokkal)
         for ($i=0; $i < count($recs); $i++) {
             foreach ($this->selects as $cn => $colDef) {

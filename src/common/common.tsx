@@ -37,10 +37,13 @@ export enum btnStyle {
 
 var _axiosResults: Array<{data?:any, error?:any}> = [];
 var _data: any = {};
+type DragData = {"movementX": number, "movementY": number};
+var dragContainer:any;
 export let axiosLog: Array<{url:string, par:any}> = [];
 export var common = {
 
     _lngTokens : {},
+
 
     /**
      * get or set common data
@@ -79,6 +82,24 @@ export var common = {
         $('#popupMsg')?.removeClass('alert-info');
         $('#popupMsg')?.addClass(className);
         $('.popupClose button')?.on('click',common.popupClose);
+
+        // set draggable
+        var container = $('#popupMsg')[0];
+        function onMouseDrag(data:DragData) {
+            let getContainerStyle = window.getComputedStyle(container);
+            let leftValue = parseInt(getContainerStyle.left);
+            let topValue = parseInt(getContainerStyle.top);
+            container.style.left = `${leftValue + data.movementX}px`;
+            container.style.top = `${topValue + data.movementY}px`;
+        }
+        container.addEventListener("mousedown", () => {
+            container.addEventListener("mousemove", onMouseDrag);
+        });
+        document.addEventListener("mouseup", () => {
+            container.removeEventListener("mousemove", onMouseDrag);
+        });
+        $('#popupMsg').css('cursor','grab');
+
         $('#popupMsg')?.show();
         return;
     },
@@ -126,6 +147,24 @@ export var common = {
         $('#popupConfirm #btnNo')?.removeClass('btn-danger');
         $('#popupConfirm #btnNo')?.addClass(btnNoClassName);
         $('.popupClose button')?.on('click',common.popupClose);
+
+        // set draggable
+        var container = $('#popupConfirm')[0];
+        function onMouseDrag(data:DragData) {
+            let getContainerStyle = window.getComputedStyle(container);
+            let leftValue = parseInt(getContainerStyle.left);
+            let topValue = parseInt(getContainerStyle.top);
+            container.style.left = `${leftValue + data.movementX}px`;
+            container.style.top = `${topValue + data.movementY}px`;
+        }
+        container.addEventListener("mousedown", () => {
+            container.addEventListener("mousemove", onMouseDrag);
+        });
+        document.addEventListener("mouseup", () => {
+            container.removeEventListener("mousemove", onMouseDrag);
+        });
+        $('#popupConfirm').css('cursor','grab');
+
         $('#popupConfirm')?.show();
         return;
     },

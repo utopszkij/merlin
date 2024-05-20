@@ -1,3 +1,4 @@
-{"name":"algkoritm","email":"nome","two_factor":0,"two_factor_secret":"","id":1,"password":"$2y$10$ce4vCuCoqkov46UQ7vp0m.\/hFeN6MuhWL.dsaD3Tr351bb49Fpvma"}
-{"name":"guest","email":"nome","two_factor":0,"two_factor_secret":"","id":2}
-{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$nVwWzqU4t1N7VyT6\/VqVU.C6GouZBDHEcUykVIMZLZ7ZXC7tSf2vu","realname":"Test Elek","avatar":"","status":"notActivated","email_verifyed":0,"two_factor":1,"two_factor_secret":"OONKI47RBAY5BORR","error_count":0,"lock_time":0}
+{"name":"algoritm","email":"nome","two_factor":0,"two_factor_secret":"","id":1,"password":"$2y$10$I9QSXiqiOX2oXyTLbiH84.\/3O4GhRxqd\/WBYrsDLRckqdnIUNl58u"}
+{"name":"guest","email":"nome2","two_factor":0,"two_factor_secret":"","id":2}
+{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$rokZJkhfhSDdwCNclIaleuVqkIKQgQw4LpJT5y2QrGF6lGFx1YLfW","realname":"Test Elek","avatar":"","status":"notActivated","email_verifyed":0,"two_factor":1,"two_factor_secret":"MMZIAF2ACJGCJBDY","error_count":1,"lock_time":1715533036}
+{"id":4,"username":"user","email":"user@test.test","password":"$2y$10$JNRQaY.5felqlWGEYBCjceDVC8vERD7ZyyKswsY1MTiGGIkdMD2kS","realname":"User","avatar":"","status":"active","email_verifyed":0,"two_factor":0,"two_factor_secret":"123","error_count":0,"lock_time":0}

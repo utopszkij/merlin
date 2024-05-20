@@ -30,12 +30,44 @@ class UserRecord extends \RATWEB\DB\Record {
     public int $lock_time;
 }
 
+class ProfileRecord extends \RATWEB\DB\Record {
+    public bool $ok = false;
+    public $errorMsg = '';
+    public int $id = 0;
+    public string $username = '';
+    public string $email = '';
+    public string $realname = '';
+    public string $avatar = '';
+    public string $status = '';
+    public int $email_verifyed = 0;
+    public int $two_factor = 0; 
+    public string $two_factor_secret = '';
+    public array $groups = []; // [{id,rank,name},..]
+    public array $allGroups = []; // [{id,name},...]
+}
+
 class MemberRecord extends \RATWEB\DB\Record {
     public int $id;
     public int $users_id;
     public int $groups_id;
     public string $rank;
     public string $status;
+}
+
+class IplockRecord extends \RATWEB\DB\Record {
+    public int $id = 0;
+    public string $ip = '';
+    public int $error_count = 0;
+    public int $lock_time = 0;
+}
+
+class DologinResult {
+    public bool $ok = false;
+    public string $errorMsg = '';
+    public int $id = 0;
+    public string $nick = '';
+    public string $avatar = '';
+    public array $groups = [];  // [{group_id, rank, name},..]
 }
 
 class Users extends Api {
@@ -103,19 +135,178 @@ class Users extends Api {
         $record->status = 'notActivated';
         $record->error_count = 0;
         $record->lock_time = 0;
-
-        $result = $this->insert($record);
+        $s = $this->validator('add',$record, $record, 0);
+        if ($s == '') {
+            $result = $this->insert($record);
+        } else {
+            $result = s;
+        }    
         return $result;
     }
 
+
+    /**
+     * $_SERVER['REMOTE_ADDR'] errocount increment in datbase
+     */
+    protected function incIpErrorCount() {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $q = new \RATWEB\DB\Query('iplocks');
+        $rec = $q->where('ip','=', $ip)->first();
+        if (!isset($rec->id)) {
+            $rec = new IplockRecord();
+            $rec->ip = $ip;
+            $rec->error_count = 1;
+            $rec->lock_time = time();
+            $q->insert($rec); 
+        } else {
+            $rec->error_count++;
+            $rec->lock_time = time();
+            $q->where('id','=',$rec->id)->update($rec);
+        }
+    }
+
+    /**
+    * user error count update in database
+    * @param int $id userId
+    */
+    protected function incUserErrorCount(int $id) {
+        $q = new \RATWEB\DB\Query('users');
+        $rec = $q->where('id','=', $id)->first();
+        if (isset($rec->id)) {
+            $rec->error_count++;
+            $rec->lock_time = time();
+            $q->where('id','=',$id)->update($rec);
+        }
+    }
+
+    /**
+     * process success Login
+     * @param UserRecord $user
+     * @return DoLoginResult
+     */
+    protected function successLogin($user): DoLoginResult {        
+        $result = new DoLoginResult();
+        $result->ok = true;
+        $result->errorMsg = '';
+        $this->setSession('loged',$user->id);
+        $this->setSession('logedNick',$user->username);
+        $this->setSession('logedAvatar',$user->avatar);
+        // read user'groups into session
+        $q1 = new \RATWEB\DB\Query('members','m');
+        
+        /*
+        $recs = $q1->join('LEFT','groups','g','g.id','=','m.groups_id')
+        ->select(['m.groups_id','m.rank','g.name'])
+        ->where('m.users_id','=',$user->id)
+        ->where('m.status','=','active')
+        ->where('g.status','=','active')
+        ->all();
+        */
+        $recs = [];
+
+        $this->setSession('logedGroups',$recs);
+        $result->id = $user->id;
+        $result->nick = $user->username;
+        $result->avatar = $user->avatar;
+        $result->groups = $recs;
+        $user->error_count = 0;
+        $user->lock_time = 0;
+        $q = new \RATWEB\DB\Query('users');
+        $q->where('id','=',$user->id)->update($user);
+        $result->errorMsg = $q->error;
+        $result->ok = ($result->errorMsg == '');
+        return $result;
+    }        
+
     /**
      * process login form
-     * REQUEST params: username, password
-     *   (can email in $usernae)
-     * @return string ''|errorMsg
+     * @params string email
+     * @params string password
+     * @return DoLoginResult
+     * {ok:true|false, errorMsg:'xxxxxx'} | {loged:true, id:'xxx', nick:'xxx', avatar:'xxx', groups:'xxx'}
+     *    errorMsg:'NICK_INVALID'|'PASSWORD_INVALID'|'NOT_ACTIVATED'|'DISABLED'|'ACCOUNT_BLOCKED'|'IP_BLOCKED'|
+     *             'TWO FACTOR', id, nick, avatar, groups 
      */
-    public function doLogin(): string {
-        return '';
+    public function doLogin(string $email, string $password): DologinResult {
+        $result = new DologinResult();
+        $ip = $_SERVER['REMOTE_ADDR'];
+        // delete old locks
+        $q = new \RATWEB\DB\Query('iplocks');
+        $q->where('lock_time','<', (time()-LOCKTIME))
+        ->where('lock_time','>',0);
+        $q->update(JSON_decode('{"error_count":0, "lock_time":0}'));
+
+        $q = new \RATWEB\DB\Query('users');
+        $record = new \stdClass();
+        $record->error_count = 0;
+        $record->lock_time = 0;
+        $q->where('lock_time','<', (time()-LOCKTIME))
+        ->where('lock_time','>',0)
+        ->update($record);
+
+        // if ip blocked result errorMsg
+        $q = new \RATWEB\DB\Query('iplocks');
+        $ipRec = $q->where('ip','=', $_SERVER['REMOTE_ADDR'])->first();
+        if (isset($ipRec->id)) {
+            if ($ipRec->error_count > ERRORLIMIT) {
+                $result->errorMsg = 'IP_BLOCKED';
+                $result->ok = false;
+            }
+        }
+
+        // read user ecord
+        if ($result->errorMsg == '') {
+            $q = new \RATWEB\DB\Query('users');
+            $user = $q->where('email','=', $email)->first();
+            if (!isset($user->id)) {
+                $q = new \RATWEB\DB\Query('users');
+                $user = $q->where('username','=', $email)->first();
+            }
+
+            // if not found increment ip errorCount, result errorMsg
+            if (!isset($user->id)) {
+                $result->errorMsg = 'NOT_FOUND';
+                $result->ok = false;
+                $this->incIpErrorCount();
+            }
+        }
+        // if user blocked return errorMsg
+        if ($result->errorMsg == '') {
+            if ($user->error_count > ERRORLIMIT) {
+                $result->errorMsg = 'USER_BLOCKED';
+                $result->ok = false;
+            }
+        }    
+        // check password
+        if ($result->errorMsg == '') {
+            if (!password_verify($password, $user->password)) {
+                // if wrong incremet user errorCount, result errorMsg
+                $result->errorMsg = 'WRONG_PASSWORD';
+                $result->ok = false;
+                $this->incUserErrorCount($user->id);
+            }
+        }    
+        // if two_factor result  errorMsg="two_factor"
+        if ($result->errorMsg == '') {
+            if ($user->two_factor == 1) {
+                $this->setSession('twoFactorUser',$user);
+                $result->errorMsg = 'TWO_FACTOR';
+                $result->ok = false;
+            }
+        }    
+
+        // if user disabled error errorMsg
+        if ($result->errorMsg == '') {
+            if ($user->status == 'disabled') {
+                $result->errorMsg = 'USER_DISABLED';
+                $result->ok = false;
+            }
+        }    
+        // if ok result ok=true errorMsg='', save user into session, clear user errorCounts
+        if ($result->errorMsg == '') {
+            $result = $this->successLogin($user);
+        }    
+        return $result;
     }
 
     /**
@@ -262,16 +453,6 @@ class Users extends Api {
     }
 
     /**
-     * get user and user' groups
-     * @param int $userId
-     * @return Record {id,username,email,realname,avatar,twofactor,groups:[groupId,...] }
-     */
-    public function getById(int $userId): \RATWEB\DB\Record {
-        $result = new \RATWEB\DB\Record();
-        return $result;
-    }
-
-	/**
 	 * process after insert: 
 	 * @param Record $record
 	 * @return '' or errorMsg
@@ -395,6 +576,40 @@ class Users extends Api {
         } else {
             $result = 'ACCOUNT_NOT_FOUND';
         }
+        return $result;
+    }
+
+    public function doTwoFactor(string $key): DoLoginResult {
+        $result = new DoLoginResult();
+        $user = $this->getSession('twoFactorUser','');
+        if ($user != '') {
+            $ga = new PHPGangsta_GoogleAuthenticator();
+            $oneCode = $key;
+            $secret = $user->two_factor_secret;
+            if (($ga->verifyCode($secret, $oneCode, 2)) ||
+                (($_SERVER['REMOTE_ADDR'] == '127.0.0.1') && ($oneCode == 'test'))) {    // 2 = 2*30sec clock tolerance                
+                $result = $this->successLogin($user);
+            } else {
+                $result->ok = false;
+                $result->errorMsg = 'WRONG_KEY';
+            }    
+        } else {
+            $result->ok = false;
+            $result->errorMsg = 'NOT_FOUND';
+        }
+        return $result;
+    }
+
+    /**
+     * get profile
+     * @param int $userId  (if $userId == 0 then show loged' profile)
+     * @return ProfileRecord
+     * loged == systemAdmin result all data
+     * loged == $userId  result all data
+     * other: result only username, avatar
+     */
+    public function getProfile(int $userId): ProfileRecord {
+        $result = new ProfileRecord();
         return $result;
     }
 

@@ -338,7 +338,7 @@ class Query {
 		$this->cursor = -1;
 		if (($this->errno == 0) & ($this->res->num_rows == 1)) {
 				$this->res->data_seek(0);
-				$rec = $this->res->fetch_object('\RATWEB\DB\Record');			
+				$rec = $this->res->fetch_object();			
 				$result = (int)$rec->cc;
 		}
 		return  $result;	
@@ -346,7 +346,7 @@ class Query {
 
 	/**
 	* rekordok lekérése tömbbe
-	* @return array of Record
+	* @return array of stdClass
 	*/
 	public function all():array  {
 		$result = [];
@@ -377,7 +377,7 @@ class Query {
 		if (($this->errno == 0) & (isset($this->res->num_rows))) {
 			for ($i = 0;  $i < $this->res->num_rows; $i++) {
 				$this->res->data_seek($i);
-				$result[] = $this->res->fetch_object('\RATWEB\DB\Record');			
+				$result[] = $this->res->fetch_object();			
 			}		
 		}		
 		$i = count($this->unions) - 1;
@@ -387,10 +387,10 @@ class Query {
 
 	/**
 	* a feltételkenek megfelelő egyetlen (vagy első) rekord lekérése
-	* @return Record
+	* @return stdClass
 	*/
-	public function first(): Record {
-		$result = new Record();
+	public function first() {
+		$result = new \stdClass();
 		$this->limit = 1;
 		if ($this->sql == '') {
 			$this->res = $this->mysqli->query($this->getSql());
@@ -411,7 +411,7 @@ class Query {
 		$this->cursor = -1;
 		if (($this->errno == 0) & ($this->res->num_rows == 1)) {
 				$this->res->data_seek(0);
-				$result = $this->res->fetch_object('\RATWEB\DB\Record');			
+				$result = $this->res->fetch_object();			
 		}
 		$i = count($this->unions) - 1;
 		if ($i >= 0) $this->unions[$i]->where->clear(); 
@@ -423,8 +423,8 @@ class Query {
 	* ha a végére ért akkor errno = 1 error= 'end of record set';
 	* @return Record
 	*/
-	public function fetch(): Record {
-		$result = new Record();
+	public function fetch(): stdClass {
+		$result = new \stdClass();;
 		if (!$this->res) {
 			if ($this->sql == '') {
 				$this->res = $this->mysqli->query($this->getSql());
@@ -454,7 +454,7 @@ class Query {
 			$this->cursor++;
 			if ($this->cursor < $this->res->num_rows) {
 				$this->res->data_seek($this->cursor);
-				$result = $this->res->fetch_object('\RATWEB\DB\Record');			
+				$result = $this->res->fetch_object();			
 			} else {
 				$this->error = 'end of record set';		
 				$this->errno = 1;		
@@ -515,10 +515,10 @@ class Query {
 
 	/**
 	* a megadott feltételknek megfelelő rekordok modosítása
-	* @param Record módosítandó mezőket/értékeket tartalmazza
+	* @param stdClass Record módosítandó mezőket/értékeket tartalmazza
 	* @retun bool sikeres vagy nem?
 	*/
-	public function update(Record $record) {
+	public function update($record) {
 		$result = 0;
 		$this->res = false;
 		$this->cursor = -1;

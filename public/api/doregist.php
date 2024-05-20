@@ -20,7 +20,7 @@
 if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    error_reporting(E_ERROR);
 }    
 if (!defined('SITETITLE')) include_once __DIR__.'/../config.php';
 include_once __DIR__.'/../objects/users.php';
@@ -32,7 +32,9 @@ if (!defined('UNITTEST')) {
 }    
 $userObj = new Users();
 $result = $userObj->initResult();
-$result->errorMsg = $userObj->doRegist();
+$email = Api::getRequest('email','');
+$password = Api::getRequest('password','');
+$result->errorMsg = $userObj->doRegist($email, $password);
 $result->ok = ($result->errorMsg == '');
 echo JSON_encode($result);
 ?>

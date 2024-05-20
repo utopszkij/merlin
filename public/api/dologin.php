@@ -1,8 +1,8 @@
 <?php
 /**
  * do login
- * @params sid, email, password
- * @return {loged:false, errorMsg:'xxxxxx'} | {loged:true, id:'xxx', nick:'xxx', avatar:'xxx', groups:'xxx'}
+ * @params sid, username|email, password
+ * @return {ok:true|false, errorMsg:'xxxxxx'} | {loged:true, id:'xxx', nick:'xxx', avatar:'xxx', groups:'xxx'}
  *    errorMsg:'NICK_INVALID'|'PASSWORD_INVALID'|'NOT_ACTIVATED'|'DISABLED'|'ACCOUNT_BLOCKED'|'IP_BLOCKED'|
  *             'TWO FACTOR' 
  * Process:
@@ -22,39 +22,24 @@
 if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-}    
+    error_reporting(E_ERROR);
+} else {
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+} 
+   
+if (!defined('SITETITLE')) include_once __DIR__.'/../config.php';
+include_once __DIR__.'/../objects/users.php';
 if (!defined('UNITTEST')) {
-	session_id( $_POST['sid'] );
+	session_id( Api::getRequest('sid') );
 	session_start();
 	header('Content-Type: application/json; charset=utf-8');
 	header('Access-Control-Allow-Origin:*');
 }
-$result = new \stdClass();
-$result->loged=false;
-$result->id='';
-$result->nick='';
-$result->avatar='';
-$result->groups='';
-
-/* CHECK sid is valid? */
-if (($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR']) |
-    ($_SESSION['HTTP_USER_AGENT'] != $_SERVER['HTTP_USER_AGENT'])) {
-	// session id is invalid!
-	$result->errorMsg = 'SESSION_INVALID';
-	echo JSON_encode($result);
-	exit();
-}
-
-
-//+ TEST
-$result->loged=true;
-$result->id='1';
-$result->nick='user1';
-$result->avatar='images/noimage.png';
-$result->groups='registered';
-$result->errorMsg = '';
-$_SESSION['logedId'] = $result->id;
-//- TEST
+$userObj = new Users();
+// $result = $userObj->initResult();
+$email = Api::getRequest('email','');
+$password = Api::getRequest('password','');
+$result = $userObj->doLogin($email,$password);
 echo JSON_encode($result);
 ?>

@@ -75,6 +75,15 @@ class LogRecord extends \RATWEB\DB\Record {
 		}
 
 		/**
+		 * set sinto session
+		 * @param string $name
+		 * @param mixed value
+		 */
+		public function setSession(string $name, $value) {
+			$_SESSION[$name] = $value;
+		}
+
+		/**
 		 * get value from GET or POST
 		 * @param string $name
 		 * @param mixed $default - optional

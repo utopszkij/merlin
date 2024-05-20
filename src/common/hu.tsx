@@ -115,6 +115,8 @@ export var lngTokens = {
     "ACCEPT2":"elolvastam, megértettem, hozzájárulok az adatkezeléshez",
     "MYDATA":"Adataim JSON formában",
     "ACTIVATOR_EMAIL_SENDED":"Aktiváló email elküldve",
+    "TWO_FACTOR_KEY":"Kétf faktoros azonosítás kulcs:",
+    "WRONG_KEY":"Nem jó kulcs",
 
     "GROUP":"Csoport",
     "GROUP_NAME_REQUED":"Csoport név nem lehet üres",
