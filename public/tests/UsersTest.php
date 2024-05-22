@@ -158,10 +158,9 @@ class UsersTest extends TestCase {
 
 	public function test_doLogin_userDisabled() {
 		$q = new \RATWEB\DB\Query('users');
-		$record = $q->where('username','=','user')->first();
-		$record->status = 'disabled';
-		$record = $q->where('username','=','user')->update($record);
-
+		$record = $q->where('email','=','user@test.test')->first();
+		$record->status = UserStatus::Disabled;
+		$q->where('email','=','user@test.test')->update($record);
         $this->users = new Users();
 		$res = $this->users->dologin('user@test.test','12345678');
 		$this->assertEquals('USER_DISABLED',$res->errorMsg);
@@ -172,7 +171,7 @@ class UsersTest extends TestCase {
         $this->users = new Users();
 		$q = new \RATWEB\DB\Query('users');
 		$record = $q->where('username','=','user')->first();
-		$record->status = 'active';
+		$record->status = UserStatus::Active;
 		$record->error_count = 100;
 		$record = $q->where('username','=','user')->update($record);
 
@@ -189,7 +188,7 @@ class UsersTest extends TestCase {
 		$this->users = new Users();
 		$q = new \RATWEB\DB\Query('users');
 		$record = $q->where('username','=','user')->first();
-		$record->status = 'active';
+		$record->status = UserStatus::Active;
 		$record->error_count = 0;
 		$record = $q->where('username','=','user')->update($record);
 		
@@ -228,7 +227,6 @@ class UsersTest extends TestCase {
 	}
 
 /*
-
 	public function test_getProfile_notFound() {
         $this->users = new Users();
 		$res = $this->users->getProfile(33);

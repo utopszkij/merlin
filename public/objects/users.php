@@ -3,6 +3,7 @@
  * users object
  */
 include_once __DIR__.'/api.php';
+
 use RATWEB\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -15,6 +16,19 @@ require_once __DIR__.'/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require_once __DIR__.'/../../vendor/phpmailer/phpmailer/src/SMTP.php';
 require_once __DIR__.'/../../vendor/phpgangsta/googleauthenticator/PHPGangsta/GoogleAuthenticator.php';
 
+enum UserStatus: string {
+    case Active = 'active';
+    case Disabled = 'disabled';
+    case NotActivated = 'notActivetd';
+}
+
+enum MemberStatus: string {
+    case Active = 'active';
+    case Closed = 'closed';
+    case Proposal = 'proposal';
+    case Applicant = 'applicant';
+}
+
 class UserRecord extends \RATWEB\DB\Record {
     public int $id;
     public string $username;
@@ -22,7 +36,7 @@ class UserRecord extends \RATWEB\DB\Record {
     public string $password;
     public string $realname;
     public string $avatar;
-    public string $status;
+    public UserStatus $status;
     public int $email_verifyed;
     public int $two_factor; 
     public string $two_factor_secret;
@@ -30,7 +44,7 @@ class UserRecord extends \RATWEB\DB\Record {
     public int $lock_time;
 }
 
-class ProfileRecord extends \RATWEB\DB\Record {
+class ProfileResult extends \RATWEB\DB\Record {
     public bool $ok = false;
     public $errorMsg = '';
     public int $id = 0;
@@ -38,7 +52,7 @@ class ProfileRecord extends \RATWEB\DB\Record {
     public string $email = '';
     public string $realname = '';
     public string $avatar = '';
-    public string $status = '';
+    public UserStatus $status = UserStatus::Active->value;
     public int $email_verifyed = 0;
     public int $two_factor = 0; 
     public string $two_factor_secret = '';
@@ -51,7 +65,7 @@ class MemberRecord extends \RATWEB\DB\Record {
     public int $users_id;
     public int $groups_id;
     public string $rank;
-    public string $status;
+    public MemberStatus $status;
 }
 
 class IplockRecord extends \RATWEB\DB\Record {
@@ -68,6 +82,7 @@ class DologinResult {
     public string $nick = '';
     public string $avatar = '';
     public array $groups = [];  // [{group_id, rank, name},..]
+    public bool $sysAdmin = false;
 }
 
 class Users extends Api {
@@ -132,14 +147,14 @@ class Users extends Api {
         $record->two_factor_secret = $ga->createSecret(); 
         $record->avatar = '';
         $record->email_verifyed = 0;
-        $record->status = 'notActivated';
+        $record->status = UserStatus::NotActivated->value;
         $record->error_count = 0;
         $record->lock_time = 0;
         $s = $this->validator('add',$record, $record, 0);
         if ($s == '') {
             $result = $this->insert($record);
         } else {
-            $result = s;
+            $result = $s;
         }    
         return $result;
     }
@@ -194,21 +209,25 @@ class Users extends Api {
         // read user'groups into session
         $q1 = new \RATWEB\DB\Query('members','m');
         
-        /*
         $recs = $q1->join('LEFT','groups','g','g.id','=','m.groups_id')
         ->select(['m.groups_id','m.rank','g.name'])
         ->where('m.users_id','=',$user->id)
         ->where('m.status','=','active')
         ->where('g.status','=','active')
         ->all();
-        */
-        $recs = [];
-
+        $sysAdmin = false;
+        foreach ($recs as $rec) {
+            if ($rec->name == 'System admins') {
+                $sysAdmin = true;
+            }
+        }
         $this->setSession('logedGroups',$recs);
+        $this->setSession('logedSysAdmin',$sysAdmin);
         $result->id = $user->id;
         $result->nick = $user->username;
         $result->avatar = $user->avatar;
         $result->groups = $recs;
+        $result->sysAdmin = $sysAdmin;
         $user->error_count = 0;
         $user->lock_time = 0;
         $q = new \RATWEB\DB\Query('users');
@@ -270,6 +289,7 @@ class Users extends Api {
                 $this->incIpErrorCount();
             }
         }
+
         // if user blocked return errorMsg
         if ($result->errorMsg == '') {
             if ($user->error_count > ERRORLIMIT) {
@@ -297,7 +317,7 @@ class Users extends Api {
 
         // if user disabled error errorMsg
         if ($result->errorMsg == '') {
-            if ($user->status == 'disabled') {
+            if ($user->status == UserStatus::Disabled->value) {
                 $result->errorMsg = 'USER_DISABLED';
                 $result->ok = false;
             }
@@ -465,7 +485,7 @@ class Users extends Api {
         $record1->users_id = $record->id;
         $record1->groups_id = 2; // registered users
         $record1->rank = 'member';
-        $record1->status = 'active';
+        $record1->status = MemberStatus::Active->value;
         $db = new \RATWEB\DB\Query('members');
         $db->insert($record1);
         // 2. upload avatar file and update avatar field in users record
@@ -488,7 +508,7 @@ class Users extends Api {
             $record1->users_id = $record->id;
             $record1->groups_id = 3; // system admins
             $record1->rank = 'member';
-            $record1->status = 'active';
+            $record1->status = MemberStatus::Active->value;
             $db = new \RATWEB\DB\Query('members');
             $result = $db->insert($record1);
         }
@@ -567,7 +587,7 @@ class Users extends Api {
         $res = $q->where('two_factor_secret','=',$two_factor_secret)->first();
         if (isset($res->id)) {
             if (password_verify($res->id, $hash)) {
-                $res->status = 'enabled';
+                $res->status = UserStatus::Active->value;
                 $res->email_verifyed = 1;
                 $q->where('id','=',$res->id)->update($res);
             } else {
@@ -582,6 +602,7 @@ class Users extends Api {
     public function doTwoFactor(string $key): DoLoginResult {
         $result = new DoLoginResult();
         $user = $this->getSession('twoFactorUser','');
+
         if ($user != '') {
             $ga = new PHPGangsta_GoogleAuthenticator();
             $oneCode = $key;
@@ -608,8 +629,8 @@ class Users extends Api {
      * loged == $userId  result all data
      * other: result only username, avatar
      */
-    public function getProfile(int $userId): ProfileRecord {
-        $result = new ProfileRecord();
+    public function getProfile(int $userId): ProfileResult {
+        $result = new ProfileResult();
         return $result;
     }
 

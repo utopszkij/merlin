@@ -19,25 +19,11 @@
  * store session (1): logedUser:{loged:false, id:'xxxx', twoFactor:true}  
  * store session (2): logedUser:{loged:true, id:'xxx', nick:'xxx', avatar:'xxx', groups:'xxx,xxx,xxx'}
  */
-if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ERROR);
-} else {
-    ini_set('display_errors', 0);
-    ini_set('display_startup_errors', 0);
-} 
-   
-if (!defined('SITETITLE')) include_once __DIR__.'/../config.php';
+error_reporting(E_ERROR);
+include_once __DIR__.'/common.php';
+
 include_once __DIR__.'/../objects/users.php';
-if (!defined('UNITTEST')) {
-	session_id( Api::getRequest('sid') );
-	session_start();
-	header('Content-Type: application/json; charset=utf-8');
-	header('Access-Control-Allow-Origin:*');
-}
 $userObj = new Users();
-// $result = $userObj->initResult();
 $email = Api::getRequest('email','');
 $password = Api::getRequest('password','');
 $result = $userObj->doLogin($email,$password);

@@ -330,7 +330,8 @@ export var common = {
     /**
      * session start call only in useEffect !
      * @params none
-     * @returns  data('sid'), data('session') 
+     * @returns  data('sid'), data('session')
+     *   data('session"):  {logedId, logedAvatar, logedGroups, logedSysAdmin,....}
      */
     sessionStart: () => {
         let sid = common.getCookie('sid');
@@ -343,7 +344,7 @@ export var common = {
                             sid = res.data.sid;
                             common.setCookie('sid',sid,config.COOKIE_EXPIRE_DAYS);
                             common.data('sid',sid);
-                            common.data('session',{});
+                            common.data('session',{"logedId":"", "loged":"", logedSysAdin:false, "logedAvatar":"", "logedGroups":[]});
                 }            
             });
         } else {
@@ -353,8 +354,8 @@ export var common = {
                 if (typeof res.data === 'string') {
                     common.popupMsg(res.data, msgStyle.error);
                 } else {
-                    common.data('session',res.data);
-                }    
+                    common.data('session',res.data.session);
+                }   
             })
         }	
     },

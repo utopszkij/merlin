@@ -4,18 +4,16 @@
  * @params sid
  * @return {loged:false} 
  */
-if (!defined('UNITTEST')) {
-	session_id( $_POST['sid']);
-	session_start();
-	header('Content-Type: application/json; charset=utf-8');
-	header('Access-Control-Allow-Origin:*');
-}
+error_reporting(E_ERROR);
+include_once __DIR__.'/common.php';
+
 $result = new \stdClass();
 $result->loged=0;
 $result->id='';
 $result->nick='';
 $result->avatar='';
 $result->groups='';
+$result->sysAdin = false;
 
 /* CHECK sid is valid? */
 if (($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR']) |
@@ -26,6 +24,11 @@ if (($_SESSION['REMOTE_ADDR'] != $_SERVER['REMOTE_ADDR']) |
 	exit();
 }
 $_SESSION['logedId'] = '';
+$_SESSION['loged'] = '';
+$_SESSION['logedNick'] = '';
+$_SESSION['logedAvatar'] = '';
+$_SESSION['logedGroups'] = [];
+$_SESSION['logedSysAdmin'] = false;
 
 echo JSON_encode($result);
 ?>

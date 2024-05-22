@@ -1,4 +1,4 @@
-{"name":"algoritm","email":"nome","two_factor":0,"two_factor_secret":"","id":1,"password":"$2y$10$I9QSXiqiOX2oXyTLbiH84.\/3O4GhRxqd\/WBYrsDLRckqdnIUNl58u"}
+{"name":"algoritm","email":"nome","two_factor":0,"two_factor_secret":"","id":1,"password":"$2y$10$PANyUx5zA7G3tD\/dGBf73ew2oXvpXBPO0UVjQhlvS19YDjm5i8i\/C"}
 {"name":"guest","email":"nome2","two_factor":0,"two_factor_secret":"","id":2}
-{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$rokZJkhfhSDdwCNclIaleuVqkIKQgQw4LpJT5y2QrGF6lGFx1YLfW","realname":"Test Elek","avatar":"","status":"notActivated","email_verifyed":0,"two_factor":1,"two_factor_secret":"MMZIAF2ACJGCJBDY","error_count":1,"lock_time":1715533036}
-{"id":4,"username":"user","email":"user@test.test","password":"$2y$10$JNRQaY.5felqlWGEYBCjceDVC8vERD7ZyyKswsY1MTiGGIkdMD2kS","realname":"User","avatar":"","status":"active","email_verifyed":0,"two_factor":0,"two_factor_secret":"123","error_count":0,"lock_time":0}
+{"id":3,"username":"test_elek","email":"test_elek@test.test","password":"$2y$10$FfVLuPT1\/c5i0\/bjf87bKuElT.pgQcodmJvR6z3XNn8r1PgcKFkky","realname":"Test Elek","avatar":"","status":"notActivetd","email_verifyed":0,"two_factor":1,"two_factor_secret":"NUMNFNTZCEQK235G","error_count":1,"lock_time":1716275859}
+{"id":4,"username":"user","email":"user@test.test","password":"$2y$10$0GxBjKOEnXhKkSlTPgvDMead\/8.uwY6q\/6ZT1uthFRwGAU0Y.9l9q","realname":"User","avatar":"","status":"active","email_verifyed":0,"two_factor":0,"two_factor_secret":"123","error_count":0,"lock_time":0}
